@@ -1,0 +1,17 @@
+.content {
+  height: 100%;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .logo {
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .right {
+      color: white;
+    }
+  }
+}
