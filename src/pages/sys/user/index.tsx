@@ -29,7 +29,7 @@ const processPermission = (routesData: any[], newData: any[]) => {
     routeItem.routeId = id
     let item: any = {
       title: routeItem.meta.title,
-      // value: routeItem.routeId,
+      value: routeItem.routeId,
       key: routeItem.routeId,
     }
     newData.push(item)
@@ -59,11 +59,11 @@ const processPermission = (routesData: any[], newData: any[]) => {
 
 export default (props) => {
   const [data, setData] = useState<DataType[]>([])
-  const [allPermissions, setPer] = useState<any[]>()
-  const [checked, setChecked] = useState<string[]>()
+  // const [allPermissions, setPer] = useState<any[]>()
+  const [choices, setChecked] = useState<string[]>([])
   const [messageApi, contextHolder] = message.useMessage()
   const navigate = useNavigate()
-  const handleSubmit = (username: string) => {
+  const handleSubmit = (username: string, checked: Array<string>) => {
     Modal.confirm({
       title: `是否更改用户${username}权限？`,
       okText: '确认',
@@ -71,7 +71,7 @@ export default (props) => {
       onOk: () => {
         if (Array.isArray(checked)) {
           globalStore
-            .updatePermissions({ username, userPower: checked })
+            .updatePermissions({ username, userPower: checked.join('') })
             .then(() => {
               messageApi.open({
                 type: 'success',
@@ -108,16 +108,13 @@ export default (props) => {
           name: item.name,
           username: item.username,
           phone: item.phone,
+          userPower: item.userPower.split(','),
         }
       })
     )
   }
   useEffect(() => {
-    let result = []
     getData()
-    processPermission(routesStructData, result)
-    setPer(result)
-    setChecked(globalStore.permissions)
   }, [])
 
   const initColumns = [
@@ -139,22 +136,30 @@ export default (props) => {
     {
       title: '操作',
       dataIndex: 'operation',
-      render: (_, record) => (
-        <ModalForm
-          handleSubmit={handleSubmit}
-          handleDelete={handleDelete}
-          username={record.username}>
-          <Tree
-            defaultCheckedKeys={globalStore.permissions}
-            checkable
-            treeData={allPermissions}
-            onCheck={(data: any) => {
-              setChecked(data)
-            }}
-          />
-          {JSON.stringify(checked)}
-        </ModalForm>
-      ),
+      render: (_, record) => {
+        let result = []
+        processPermission(routesStructData, result)
+        return (
+          <ModalForm
+            handleSubmit={() =>
+              handleSubmit(
+                record.username,
+                choices.length == 0 ? record.userPower : choices
+              )
+            }
+            handleDelete={handleDelete}
+            username={record.username}>
+            <Tree
+              defaultCheckedKeys={record.userPower}
+              checkable
+              treeData={result}
+              onCheck={(data: any) => {
+                setChecked(data)
+              }}
+            />
+          </ModalForm>
+        )
+      },
     },
   ]
 

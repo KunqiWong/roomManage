@@ -11,6 +11,7 @@ type room = {
 
 class Room {
   roomData: room = []
+  record: any = []
 
   constructor() {
     makeAutoObservable(this)
@@ -20,11 +21,15 @@ class Room {
     const data = JSON.parse(sessionStorage.getItem('roomData'))
     if (data) {
       this.roomData = data.room
+      this.record = data.record
     }
   }
 
   setRoomData = (data) => {
     this.roomData = data
+  }
+  setRecord = (data) => {
+    this.record = data
   }
 
   update = (data) => {

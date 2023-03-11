@@ -50,3 +50,32 @@ export function getRecord(data: record) {
     data,
   })
 }
+
+export function postRecord(data: any) {
+  return http.request({
+    url: '/postRecord',
+    method: 'POST',
+    data,
+  })
+}
+
+export function getSafeInfo() {
+  return http.request({
+    url: '/getSafeInfo',
+    method: 'GET',
+  })
+}
+
+export function judgeReserve() {
+  return http.request({
+    url: '/judgeReserve',
+    method: 'GET',
+  })
+}
+
+export function getPractice(data: any) {
+  return http.request({
+    url: '/getPractice',
+    method: 'post',
+  })
+}

@@ -32,6 +32,7 @@ export default observer(() => {
       'roomData',
       JSON.stringify({
         room: room.roomData,
+        record: room.record,
       })
     )
     if (location.pathname == '/') {
@@ -63,7 +64,9 @@ export default observer(() => {
         globalStore
           .getPermissions()
           .then((res) => {
-            const { userPower } = res.data
+            let { userPower } = res.data
+            userPower = userPower.split(',')
+
             sessionStorage.setItem(
               'PERMISSIONS',
               JSON.stringify({ PERMISSIONS: userPower })

@@ -6,6 +6,7 @@ import { UUID } from '@/common/utils'
 import styles from './index.module.scss'
 import { globalStore, room } from '@/stores/index'
 import { getPath } from '@/common/hooks/path'
+import { deleteSafe, updateSafe } from '@/common/http/user'
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null)
 
@@ -64,7 +65,8 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
       toggleEdit()
       handleSave({ ...record, ...values })
-      mobx.update({ ...record, ...values })
+      mobx.update({ ...record, ...values }) ||
+        updateSafe({ ...record, ...values })
     } catch (errInfo) {
       console.log('Save failed:', errInfo)
     }
@@ -142,7 +144,15 @@ const CommonTable: React.FC = ({ data, initColumns, buttonName }) => {
         type: 'success',
         content: '删除成功',
       })
-    })
+    }) ||
+      deleteSafe({ id: key }).then(() => {
+        const newData = dataSource.filter((item) => item.key !== key)
+        setDataSource(newData)
+        messageApi.open({
+          type: 'success',
+          content: '删除成功',
+        })
+      })
   }
 
   const action = {
@@ -151,7 +161,7 @@ const CommonTable: React.FC = ({ data, initColumns, buttonName }) => {
     render: (_, record: { key: React.Key }) =>
       dataSource.length >= 1 ? (
         <Popconfirm
-          title={`确定删除该机房吗?`}
+          title={`确定删除该行吗?`}
           onConfirm={() => handleDelete(record.key)}>
           <a>删除</a>
         </Popconfirm>
@@ -162,7 +172,7 @@ const CommonTable: React.FC = ({ data, initColumns, buttonName }) => {
     editable?: boolean
     dataIndex: string
   })[] =
-    getPath() == '/center/sys/room'
+    getPath() != '/center/sys/user'
       ? [
           // {
           //   title: '机房',
@@ -252,14 +262,14 @@ const CommonTable: React.FC = ({ data, initColumns, buttonName }) => {
     })
   }
   function UserSearch(): React.FC {
-    return mobx == globalStore ? (
+    return getPath() == 'center/sys/user' ? (
       <Search placeholder="搜索" onSearch={onSearch} enterButton />
     ) : (
       ''
     )
   }
   const Header = (): React.FC => {
-    return getPath() != '/center/request' ? (
+    return getPath() == 'center/sys/user' ? (
       <Space style={{ marginBottom: 16 }}>
         <UserSearch></UserSearch>
         <Button onClick={() => handleAdd(data)} type="primary">
@@ -267,7 +277,12 @@ const CommonTable: React.FC = ({ data, initColumns, buttonName }) => {
         </Button>
       </Space>
     ) : (
-      ''
+      <Button
+        onClick={() => handleAdd(data)}
+        type="primary"
+        style={{ position: 'absolute', right: '70px', top: '190px' }}>
+        {buttonName}
+      </Button>
     )
   }
   return (

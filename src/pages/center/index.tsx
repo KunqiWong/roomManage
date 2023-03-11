@@ -1,4 +1,4 @@
-import { Layout, Menu } from 'antd'
+import { Input, Layout, Menu, Modal, Form, message, Button } from 'antd'
 import styles from './index.module.scss'
 import { globalStore } from '@/stores/index'
 import {
@@ -19,6 +19,7 @@ import routerConfig from '@/router/config'
 import { UserOutlined } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Dropdown, Space } from 'antd'
+import { updateSecret } from '@/common/http/user'
 
 const { Header, Content, Sider } = Layout
 
@@ -70,7 +71,9 @@ const center = observer(() => {
     navigate('/')
   }
 
-  const changeSecret = () => {}
+  const changeSecret = () => {
+    setEditing(!editing)
+  }
 
   const items: MenuProps['items'] = [
     {
@@ -91,8 +94,65 @@ const center = observer(() => {
     },
   ]
 
+  const [editing, setEditing] = useState(false)
+  const [messageApi, contextHolder] = message.useMessage()
+  const onFinish = (values: any) => {
+    console.log(values)
+
+    if (values.password == values.sureSecret) {
+      updateSecret({ password: values.password })
+        .then((res) => {
+          setEditing(!editing)
+          messageApi.success('密码修改成功')
+        })
+        .catch((res) => {
+          messageApi.error('密码修改失败')
+        })
+    } else {
+      messageApi.error('两次输入的密码不相同')
+    }
+  }
+
+  const handleCancel = () => {
+    setEditing(!editing)
+  }
+
   return (
     <Layout className={styles.content}>
+      {contextHolder}
+      <Modal
+        title="修改密码"
+        open={editing}
+        footer={null}
+        onCancel={handleCancel}>
+        <Form
+          name="basic"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={handleCancel}
+          autoComplete="off">
+          <Form.Item
+            label="密码"
+            name="password"
+            rules={[{ required: true, message: '请输入！' }]}>
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            label="确认密码"
+            name="sureSecret"
+            rules={[{ required: true, message: '请输入！' }]}>
+            <Input.Password />
+          </Form.Item>
+          <Form.Item>
+            <Space style={{ marginLeft: '335px' }}>
+              <Button onClick={handleCancel}>取消</Button>
+              <Button type="primary" htmlType="submit">
+                确认
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
       <Header className={styles.header}>
         <div className={styles.logo}>机房预约系统</div>
         <div className={styles.right}>
@@ -142,8 +202,6 @@ const center = observer(() => {
                   '/center/sys/room',
                   '/center/table/practice',
                   '/center/table/safe',
-                  '/center/home',
-                  '/center/reserve/record',
                 ]}
                 keys={[]}></KeepAlive>
             </div>

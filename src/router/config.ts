@@ -19,6 +19,9 @@ import {
   RoomPage,
   UserPage,
   Request,
+  Judge,
+  Practice,
+  Safe,
 } from '../pages'
 export default {
   center: {
@@ -38,21 +41,20 @@ export default {
       title: '表格登记',
       icon: createElement(TableOutlined),
     },
-    component: Hello,
   },
   practice: {
     meta: {
       title: '实践登记表',
       icon: createElement(ProfileOutlined),
     },
-    component: Hello,
+    component: Practice,
   },
   safe: {
     meta: {
       title: '安全检查表',
       icon: createElement(ProfileOutlined),
     },
-    component: Hello,
+    component: Safe,
   },
   request: {
     meta: {
@@ -80,7 +82,6 @@ export default {
       icon: createElement(UserOutlined),
     },
     component: UserPage,
-    state: { a: 1111 },
   },
   reserve: {
     meta: {
@@ -93,7 +94,7 @@ export default {
       title: '预约审核',
       icon: createElement(CalendarOutlined),
     },
-    component: Record,
+    component: Judge,
   },
   record: {
     meta: {
@@ -101,6 +102,5 @@ export default {
       icon: createElement(CarryOutOutlined),
     },
     component: Record,
-    state: { a: 1111 },
   },
 }

@@ -7,6 +7,7 @@ import {
   getUsers,
   searchUser,
   deleteUser,
+  updateUser,
 } from '@/common/http/user'
 
 // Model the application state.
@@ -35,6 +36,7 @@ class Global {
   getUsers = () => getUsers()
   search = (data) => searchUser(data)
   delete = (data) => deleteUser(data)
+  update = (data) => updateUser(data)
 
   logOut() {
     this.token = ''
@@ -42,6 +44,8 @@ class Global {
     this.tabsHistory = {}
     this.routerData = null
     this.permissions = []
+    sessionStorage.clear()
+    localStorage.removeItem('remember')
   }
 
   setRouterData = (data) => {
