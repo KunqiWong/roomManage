@@ -1,0 +1,47 @@
+.content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  .moderate {
+    width: calc(100% - 350px - 75px - 275px);
+    height: 30vh;
+    padding: 220px 0 75px 275px;
+    font-size: 28px;
+    text-align: left;
+    background-image: url('https://image.meiye.art/pic_1628412626755');
+    background-size: cover;
+    background-position: center;
+    .margin {
+      margin-top: -220px;
+      user-select: none;
+      color: skyblue;
+      font-size: 35px;
+    }
+  }
+
+  .loginPanel {
+    flex: none;
+    margin: 75px;
+    width: 350px;
+    margin-right: 250px;
+
+    .login-form {
+      width: 100%;
+      padding: 50px;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: 0.375s;
+    }
+
+    .login-form-margin {
+      margin-bottom: 16px;
+    }
+
+    .login-form-button {
+      width: 100%;
+    }
+  }
+}
